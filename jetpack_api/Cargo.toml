@@ -1,0 +1,28 @@
+[package]
+name = "jetpack_api"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+integration-tests = []
+
+[lib]
+crate-type = ["lib", "cdylib", "staticlib"]
+name = "jetpack_api"
+
+[dependencies]
+async-trait = { workspace = true }
+http = { workspace = true }
+indoc = { workspace = true }
+paste = { workspace = true }
+serde = { workspace = true, features = [ "derive" ] }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+uniffi = { workspace = true }
+wp_api = { path = "../../wordpress-rs/wp_api" }
+wp_contextual = { path = "../../wordpress-rs/wp_contextual" }
+wp_derive_request_builder = { path = "../../wordpress-rs/wp_derive_request_builder", features = [ "generate_request_builder" ] }
+wp_serde_helper = { path = "../../wordpress-rs/wp_serde_helper" }
+
+[build-dependencies]
+uniffi = { workspace = true , features = [ "build", "cli" ] }

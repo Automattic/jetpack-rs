@@ -1,0 +1,27 @@
+[package]
+name = "jetpack_api_integration_tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+clap = { workspace = true, features = ["derive"] }
+futures = { workspace = true }
+http = { workspace = true }
+jetpack_api = { path = "../jetpack_api", features = [ "integration-tests" ] }
+reqwest = { workspace = true, features = [ "json" ] }
+serde = { workspace = true, features = [ "derive" ] }
+serde_json = { workspace = true }
+tokio = { workspace = true, features = [ "full" ] }
+url = { workspace = true }
+wp_api = { path = "../../wordpress-rs/wp_api", features = [ "integration-tests" ] }
+wp_api_integration_tests = { path = "../../wordpress-rs/wp_api_integration_tests" }
+wp_cli = { path = "../../wordpress-rs/wp_cli" }
+
+[dev-dependencies]
+paste = { workspace = true }
+rstest = { workspace = true }
+rstest_reuse = { workspace = true }
+serial_test = { workspace = true }

@@ -1,0 +1,41 @@
+[workspace]
+members = [
+  "jetpack_api",
+  "jetpack_api_integration_tests",
+  "jp_uniffi_bindgen",
+]
+resolver = "2"
+
+[workspace.dependencies]
+anyhow = "1.0"
+async-trait = "0.1"
+base64 = "0.22"
+chrono = "0.4"
+clap = "4.5"
+convert_case = "0.6"
+futures = "0.3"
+http = "1.1"
+indoc = "2.0"
+parse_link_header = "0.3"
+paste = "1.0"
+proc-macro-crate = "3.1.0"
+proc-macro2 = "1.0"
+quote = "1.0"
+regex = "1.11"
+reqwest = "0.12"
+rocket = "0.5"
+rstest = "0.21"
+rstest_reuse = "0.7.0"
+serde = "1.0"
+serde_json = "1.0"
+serial_test = "3.1"
+strum = "0.26"
+strum_macros = "0.26"
+syn = "2.0"
+thiserror = "1.0"
+tokio = "1.40"
+toml = "0.8"
+trybuild = "1.0"
+uniffi = "0.28"
+url = "2.5"
+uuid = "1.10"

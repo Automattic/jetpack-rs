@@ -1,0 +1,47 @@
+/target
+/Cargo.lock
+/out
+
+# Crate Documentation
+/docs
+/docs.tar.gz
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+
+.idea
+local.properties
+
+# Ignore generated jni libs - at least for now
+./native/android/lib/src/main/jniLibs
+
+# Kotlin multiplatform
+native/kotlin/.kotlin/
+
+# macOS
+.DS_Store
+
+# Swift
+.build
+.swiftpm/xcode
+xcuserdata
+DerivedData
+fastlane/report.xml
+libwordPressFFI.xcframework*
+
+# Auto-generated Swift Files
+native/swift/Sources/wordpress-api-wrapper/*.swift
+
+# Test Server
+.wordpress
+test_credentials
+test_credentials.json
+/logs
+dump.sql
+
+# CI Cache
+.cargo
+/vendor
