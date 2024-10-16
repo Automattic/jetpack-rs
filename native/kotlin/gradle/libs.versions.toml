@@ -23,7 +23,7 @@ navigation = "2.8.2"
 navigationCompose = "2.8.0-alpha10"
 publish-to-s3-plugin = "0.10.0"
 rust-android-plugin = "0.9.4"
-wp-api = "trunk-568e32b96bcfec1a93e6c32dc58f8a9271960675"
+wp-api = "344-b7704c2e505166d44eed97cdf3ef60ea0cbee505"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }

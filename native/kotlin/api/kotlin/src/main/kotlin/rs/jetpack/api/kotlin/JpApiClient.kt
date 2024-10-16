@@ -3,6 +3,7 @@ package rs.jetpack.api.kotlin
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import rs.wordpress.api.kotlin.WpRequestResult
 import uniffi.jetpack_api.JetpackApiException
 import uniffi.jetpack_api.JetpackRequestExecutor
 import uniffi.jetpack_api.UniffiJetpackClient
@@ -24,36 +25,36 @@ constructor(
 
     // Provides the _only_ way to execute authenticated requests using our Kotlin wrapper.
     //
-    // It makes sure that the errors are wrapped in `JpRequestResult` type instead of forcing
+    // It makes sure that the errors are wrapped in `WpRequestResult` type instead of forcing
     // clients to try/catch the errors.
     //
     // It'll also help make sure any breaking changes to the API will end up as a compiler error.
     suspend fun <T> request(
         executeRequest: suspend (UniffiJetpackClient) -> T
-    ): JpRequestResult<T> = withContext(dispatcher) {
+    ): WpRequestResult<T> = withContext(dispatcher) {
         try {
-            JpRequestResult.JpRequestSuccess(data = executeRequest(requestBuilder))
+            WpRequestResult.WpRequestSuccess(data = executeRequest(requestBuilder))
         } catch (exception: JetpackApiException) {
             when (exception) {
-                is JetpackApiException.InvalidHttpStatusCode -> JpRequestResult.InvalidHttpStatusCode(
+                is JetpackApiException.InvalidHttpStatusCode -> WpRequestResult.InvalidHttpStatusCode(
                     statusCode = exception.statusCode,
                 )
-                is JetpackApiException.RequestExecutionFailed -> JpRequestResult.RequestExecutionFailed(
+                is JetpackApiException.RequestExecutionFailed -> WpRequestResult.RequestExecutionFailed(
                     statusCode = exception.statusCode,
                     reason = exception.reason
                 )
-                is JetpackApiException.ResponseParsingException -> JpRequestResult.ResponseParsingError(
+                is JetpackApiException.ResponseParsingException -> WpRequestResult.ResponseParsingError(
                     reason = exception.reason,
                     response = exception.response,
                 )
-                is JetpackApiException.SiteUrlParsingException -> JpRequestResult.SiteUrlParsingError(
+                is JetpackApiException.SiteUrlParsingException -> WpRequestResult.SiteUrlParsingError(
                     reason = exception.reason,
                 )
-                is JetpackApiException.UnknownException -> JpRequestResult.UnknownError(
+                is JetpackApiException.UnknownException -> WpRequestResult.UnknownError(
                     statusCode = exception.statusCode,
                     response = exception.response,
                 )
-                is JetpackApiException.WpException -> JpRequestResult.WpError(
+                is JetpackApiException.WpException -> WpRequestResult.WpError(
                     errorCode = exception.errorCode,
                     errorMessage = exception.errorMessage,
                     statusCode = exception.statusCode,
