@@ -1,4 +1,4 @@
-rootProject.name = "wordpress-rs"
+rootProject.name = "jetpack-rs"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
