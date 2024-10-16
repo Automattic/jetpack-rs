@@ -42,6 +42,7 @@ testing {
                 implementation(rootProject.libs.kotlin.test)
                 implementation(rootProject.libs.kotlinx.coroutines.test)
                 implementation(libs.kotlinx.serialization)
+                implementation(libs.wp.api)
             }
 
             targets {
@@ -70,6 +71,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.jna)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.wp.api)
 }
 
 sourceSets {

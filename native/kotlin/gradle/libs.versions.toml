@@ -23,6 +23,7 @@ navigation = "2.8.2"
 navigationCompose = "2.8.0-alpha10"
 publish-to-s3-plugin = "0.10.0"
 rust-android-plugin = "0.9.4"
+wp-api = "trunk-568e32b96bcfec1a93e6c32dc58f8a9271960675"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -48,6 +49,7 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
+wp-api = { group = "rs.wordpress.api", name = "kotlin", version.ref = "wp-api" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
