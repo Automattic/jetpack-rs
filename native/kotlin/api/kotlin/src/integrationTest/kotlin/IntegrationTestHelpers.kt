@@ -1,4 +1,4 @@
-package rs.wordpress.api.kotlin
+package rs.jetpack.api.kotlin
 
 import uniffi.wp_api.WpErrorCode
 

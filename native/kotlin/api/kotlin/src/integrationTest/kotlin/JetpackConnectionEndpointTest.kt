@@ -1,15 +1,15 @@
-package rs.wordpress.api.kotlin
+package rs.jetpack.api.kotlin
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import uniffi.wp_api.ParsedUrl
 import uniffi.wp_api.wpAuthenticationFromUsernameAndPassword
 
-class JetpackEndpointTest {
+class JetpackConnectionEndpointTest {
     // These credentials are from a throwaway site
     private val client = JetpackApiClient(
-        ParsedUrl.parse("https://pheasant-of-papers.jurassic.ninja/"), wpAuthenticationFromUsernameAndPassword(
-            username = "demo", password = "mgvd IcUJ 8NDd 51k4 xIcb 6y5b"
+        ParsedUrl.parse("https://victorious-leopon-humboldt.jurassic.ninja"), wpAuthenticationFromUsernameAndPassword(
+            username = "demo", password = "8rFY WF3l JjHb AQEu vxNi JPFl"
         )
     )
 

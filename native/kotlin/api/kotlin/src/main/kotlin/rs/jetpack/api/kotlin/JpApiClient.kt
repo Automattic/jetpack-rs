@@ -1,4 +1,4 @@
-package rs.wordpress.api.kotlin
+package rs.jetpack.api.kotlin
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
