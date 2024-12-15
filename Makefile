@@ -28,8 +28,8 @@ ifeq ($(uname), darwin)
 endif
 
 define MODULEMAP_CONTENT
-module libwordpressFFI {
-  header "libwordpressFFI.h"
+module libjetpackFFI {
+  header "libjetpackFFI.h"
   export *
 }
 endef
@@ -44,16 +44,13 @@ bindings:
 	mkdir target/swift-bindings
 	cargo build --release
 
-	echo '// Auto-generated' > target/swift-bindings/libwordpressFFI.h
-
-	cargo run --release --bin jp_uniffi_bindgen generate --library ./target/release/libwp_api.$(dylib_ext) --out-dir ./target/swift-bindings --language swift
-	echo '#include "wp_api_uniffi.h"' >> target/swift-bindings/libwordpressFFI.h
+	echo '// Auto-generated' > target/swift-bindings/libjetpackFFI.h
 
 	cargo run --release --bin jp_uniffi_bindgen generate --library ./target/release/libjetpack_api.$(dylib_ext) --out-dir ./target/swift-bindings --language swift
-	echo '#include "jetpack_api_uniffi.h"' >> target/swift-bindings/libwordpressFFI.h
+	echo '#include "jetpack_api_uniffi.h"' >> target/swift-bindings/libjetpackFFI.h
 
 	echo "$$MODULEMAP_CONTENT" > target/swift-bindings/module.modulemap
-	cp target/swift-bindings/*.swift native/swift/Sources/wordpress-api-wrapper/
+	cp target/swift-bindings/jetpack_api.swift native/swift/Sources/jetpack-api-wrapper/
 
 .PHONY: docs # Rebuild docs each time we run this command
 docs:
@@ -97,7 +94,7 @@ release-on-ci:
 xcframework-headers: bindings
 	rm -rvf target/swift-bindings/headers
 	mkdir -p target/swift-bindings/headers
-	cp target/swift-bindings/*.h target/swift-bindings/headers
+	cp target/swift-bindings/jetpack_api_uniffi.h target/swift-bindings/libjetpackFFI.h target/swift-bindings/headers
 	cp target/swift-bindings/module.modulemap target/swift-bindings/headers/
 
 apple-platform-targets-macos := x86_64-apple-darwin aarch64-apple-darwin
@@ -130,7 +127,6 @@ _build-apple-%-tvos _build-apple-%-tvos-sim _build-apple-%-watchos _build-apple-
 
 # Build the library for a specific target
 _build-apple-%: xcframework-headers
-	cargo $(CARGO_OPTS) $(cargo_config_library) build --target $* --package wp_api --profile $(CARGO_PROFILE)
 	cargo $(CARGO_OPTS) $(cargo_config_library) build --target $* --package jetpack_api --profile $(CARGO_PROFILE)
 
 # Build the library for one single platform, including real device and simulator.
@@ -149,33 +145,32 @@ xcframework-only-%:
 
 # Creating xcframework for all platforms.
 xcframework-all: $(build-apple-platform-macos) $(build-apple-platform-ios) $(build-apple-platform-tvos) $(build-apple-platform-watchos)
-	cargo run --quiet --bin xcframework -- --profile $(CARGO_PROFILE) --targets $(apple-platform-targets)
+	cargo run --manifest-path ../wordpress-rs/Cargo.toml --quiet --bin xcframework -- --profile $(CARGO_PROFILE) --targets $(apple-platform-targets)
 
 ifeq ($(SKIP_PACKAGE_WP_API),true)
 xcframework:
-	@echo "Skip building libwordpressFFI.xcframework"
+	@echo "Skip building libjetpackFFI.xcframework"
 else
 xcframework: xcframework-all
 endif
 
 xcframework-package: xcframework-all
-	rm -rf libwordpressFFI.xcframework.zip
-	ditto -c -k --sequesterRsrc --keepParent target/libwordpressFFI.xcframework/ libwordpressFFI.xcframework.zip
+	rm -rf libjetpackFFI.xcframework.zip
+	ditto -c -k --sequesterRsrc --keepParent target/libjetpackFFI.xcframework/ libjetpackFFI.xcframework.zip
 
 xcframework-package-checksum:
-	swift package compute-checksum libwordpressFFI.xcframework.zip | tee libwordpressFFI.xcframework.zip.checksum.txt
+	swift package compute-checksum libjetpackFFI.xcframework.zip | tee libjetpackFFI.xcframework.zip.checksum.txt
 
 
 docker-image-swift:
 	docker build -t wordpress-rs-swift -f Dockerfile.swift .
 
 swift-linux-library: bindings
-	rm -rvf target/swift-bindings/libwordpressFFI-linux
-	mkdir -p target/swift-bindings/libwordpressFFI-linux
-	cp target/swift-bindings/*.h target/swift-bindings/libwordpressFFI-linux/
-	cp target/swift-bindings/module.modulemap target/swift-bindings/libwordpressFFI-linux/
-	cp target/release/libwp_api.a target/swift-bindings/libwordpressFFI-linux/
-	cp target/release/libjetpack_api.a target/swift-bindings/libwordpressFFI-linux/
+	rm -rvf target/swift-bindings/libjetpackFFI-linux
+	mkdir -p target/swift-bindings/libjetpackFFI-linux
+	cp target/swift-bindings/*.h target/swift-bindings/libjetpackFFI-linux/
+	cp target/swift-bindings/module.modulemap target/swift-bindings/libjetpackFFI-linux/
+	cp target/release/libjetpack_api.a target/swift-bindings/libjetpackFFI-linux/
 
 swift-example-app: swift-example-app-mac swift-example-app-ios
 
@@ -192,7 +187,7 @@ test-swift-linux: docker-image-swift
 	docker run $(docker_opts_shared) -it wordpress-rs-swift make test-swift-linux-in-docker
 
 test-swift-linux-in-docker: swift-linux-library
-	swift test -Xlinker -Ltarget/swift-bindings/libwordpressFFI-linux -Xlinker -lwp_api -Xlinker -ljetpack_api
+	swift test -Xlinker -Ltarget/swift-bindings/libjetpackFFI-linux -Xlinker -lwp_api -Xlinker -ljetpack_api
 
 test-swift-darwin: xcframework
 	swift test

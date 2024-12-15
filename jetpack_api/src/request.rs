@@ -35,6 +35,7 @@ impl JetpackNetworkResponse {
         T: Deserialize<'de>,
         E: ParsedRequestError,
     {
-        self.inner.parse()
+        unimplemented!("Make the compiler happy for now");
+        // self.inner.parse()
     }
 }
