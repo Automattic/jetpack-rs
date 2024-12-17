@@ -31,6 +31,8 @@ xcuserdata
 DerivedData
 fastlane/report.xml
 libjetpackFFI.xcframework*
+/Package.swift
+/Package.resolved
 
 # Auto-generated Swift Files
 native/swift/Sources/jetpack-api-wrapper/*.swift
