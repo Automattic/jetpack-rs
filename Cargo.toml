@@ -49,10 +49,10 @@ wp_serde_helper = "0.1.0"
 uniffi-swift-helper = "0.1.0"
 
 [patch.crates-io]
-wp_api = { git = "https://github.com/automattic/wordpress-rs.git", branch = "trunk" }
-wp_api_integration_tests = { git = "https://github.com/automattic/wordpress-rs.git", branch = "trunk" }
-wp_cli = { git = "https://github.com/automattic/wordpress-rs.git", branch = "trunk" }
-wp_contextual = { git = "https://github.com/automattic/wordpress-rs.git", branch = "trunk" }
-wp_derive_request_builder = { git = "https://github.com/automattic/wordpress-rs.git", branch = "trunk" }
-wp_serde_helper = { git = "https://github.com/automattic/wordpress-rs.git", branch = "trunk" }
-uniffi-swift-helper = { path = "../uniffi-swift-helper" }
+wp_api = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_api_integration_tests = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_cli = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_contextual = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_derive_request_builder = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_serde_helper = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+uniffi-swift-helper = { git = "https://github.com/automattic/uniffi-swift-helper.git", branch = "real-stuff" }

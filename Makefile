@@ -92,14 +92,14 @@ endif
 
 # Creating xcframework for one single platform, including real device and simulator.
 xcframework-only-macos:
-	cargo run -q --bin swift_helper_cli build --package jetpack_api --profile $(CARGO_PROFILE) --ffi-module-name libjetpackFFI --only-macos
+	cargo run -q --bin swift_helper_cli build --profile $(CARGO_PROFILE) --only-macos
 
 xcframework-only-ios:
-	cargo run -q --bin swift_helper_cli build --package jetpack_api --profile $(CARGO_PROFILE) --ffi-module-name libjetpackFFI --only-ios
+	cargo run -q --bin swift_helper_cli build --profile $(CARGO_PROFILE) --only-ios
 
 # Creating xcframework for all platforms.
 xcframework-all:
-	cargo run -q --bin swift_helper_cli build --package jetpack_api --profile $(CARGO_PROFILE) --ffi-module-name libjetpackFFI
+	cargo run -q --bin swift_helper_cli build --profile $(CARGO_PROFILE)
 
 ifeq ($(SKIP_PACKAGE_WP_API),true)
 xcframework:
@@ -116,17 +116,13 @@ xcframework-package-checksum:
 	swift package compute-checksum libjetpackFFI.xcframework.zip | tee libjetpackFFI.xcframework.zip.checksum.txt
 
 generate-swift-package-manifest:
-	cargo run -q --bin swift_helper_cli generate-package --package jetpack_api --ffi-module-name libjetpackFFI --project-name jetpack-rs --package-name-map wp_api:WordpressAPI,jetpack_api:JetpackAPI
+	cargo run -q --bin swift_helper_cli generate-package --project-name jetpack-rs
 
 docker-image-swift:
 	docker build -t wordpress-rs-swift -f Dockerfile.swift .
 
-swift-linux-library: bindings
-	rm -rvf target/swift-bindings/libjetpackFFI-linux
-	mkdir -p target/swift-bindings/libjetpackFFI-linux
-	cp target/swift-bindings/*.h target/swift-bindings/libjetpackFFI-linux/
-	cp target/swift-bindings/module.modulemap target/swift-bindings/libjetpackFFI-linux/
-	cp target/release/libjetpack_api.a target/swift-bindings/libjetpackFFI-linux/
+swift-linux-library:
+	cargo run -q --bin swift_helper_cli build --profile $(CARGO_PROFILE)
 
 swift-example-app: swift-example-app-mac swift-example-app-ios
 
@@ -142,8 +138,8 @@ test-swift:
 test-swift-linux: docker-image-swift
 	docker run $(docker_opts_shared) -it wordpress-rs-swift make test-swift-linux-in-docker
 
-test-swift-linux-in-docker: swift-linux-library
-	swift test -Xlinker -Ltarget/swift-bindings/libjetpackFFI-linux -Xlinker -lwp_api -Xlinker -ljetpack_api
+test-swift-linux-in-docker: swift-linux-library generate-swift-package-manifest
+	swift test -Xlinker -Ltarget/libjetpackFFI/linux -Xlinker -ljetpackFFI
 
 test-swift-darwin: xcframework
 	swift test

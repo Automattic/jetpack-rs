@@ -1,7 +1,11 @@
 import Foundation
 import Testing
-//import WordPressAPIInternal
+import WordPressAPIInternal
 import JetpackAPIInternal
+
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 extension URLSession: JetpackRequestExecutor {
     public func execute(request: WpNetworkRequest) async throws -> JetpackAPIInternal.JetpackNetworkResponse {
