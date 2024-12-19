@@ -22,5 +22,5 @@ async fn jetpack_connection() {
         Arc::new(AsyncJpNetworking::default()),
     );
     let connection_status = jetpack_client.connection().status().await.assert_response();
-    assert!(!connection_status.is_active, "{:#?}", connection_status);
+    assert!(!connection_status.data.is_active, "{:#?}", connection_status);
 }

@@ -19,10 +19,10 @@ serde = { workspace = true, features = [ "derive" ] }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 uniffi = { workspace = true }
-wp_api = { path = "../../wordpress-rs/wp_api" }
-wp_contextual = { path = "../../wordpress-rs/wp_contextual" }
-wp_derive_request_builder = { path = "../../wordpress-rs/wp_derive_request_builder", features = [ "generate_request_builder" ] }
-wp_serde_helper = { path = "../../wordpress-rs/wp_serde_helper" }
+wp_api = { workspace = true }
+wp_contextual = { workspace = true }
+wp_derive_request_builder = { workspace = true, features = [ "generate_request_builder" ] }
+wp_serde_helper = { workspace = true }
 
 [build-dependencies]
 uniffi = { workspace = true , features = [ "build", "cli" ] }

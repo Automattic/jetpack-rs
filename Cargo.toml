@@ -3,6 +3,7 @@ members = [
   "jetpack_api",
   "jetpack_api_integration_tests",
   "jp_uniffi_bindgen",
+  "swift_helper_cli",
 ]
 resolver = "2"
 
@@ -39,3 +40,19 @@ trybuild = "1.0"
 uniffi = "0.28"
 url = "2.5"
 uuid = "1.10"
+wp_api = "0.1.0"
+wp_api_integration_tests = "0.1.0"
+wp_cli = "0.1.0"
+wp_contextual = "0.1.0"
+wp_derive_request_builder = "0.1.0"
+wp_serde_helper = "0.1.0"
+uniffi-swift-helper = "0.1.0"
+
+[patch.crates-io]
+wp_api = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_api_integration_tests = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_cli = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_contextual = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_derive_request_builder = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+wp_serde_helper = { git = "https://github.com/automattic/wordpress-rs.git", branch = "swift-multiple-crates-in-one-package" }
+uniffi-swift-helper = { git = "https://github.com/automattic/uniffi-swift-helper.git", branch = "real-stuff" }

@@ -27,12 +27,6 @@ ifeq ($(uname), darwin)
 	dylib_ext := dylib
 endif
 
-define MODULEMAP_CONTENT
-module libwordpressFFI {
-  header "libwordpressFFI.h"
-  export *
-}
-endef
 
 clean:
 	@# Help: Remove untracked files from the project via Git.
@@ -44,16 +38,13 @@ bindings:
 	mkdir target/swift-bindings
 	cargo build --release
 
-	echo '// Auto-generated' > target/swift-bindings/libwordpressFFI.h
-
-	cargo run --release --bin jp_uniffi_bindgen generate --library ./target/release/libwp_api.$(dylib_ext) --out-dir ./target/swift-bindings --language swift
-	echo '#include "wp_api_uniffi.h"' >> target/swift-bindings/libwordpressFFI.h
+	echo '// Auto-generated' > target/swift-bindings/libjetpackFFI.h
 
 	cargo run --release --bin jp_uniffi_bindgen generate --library ./target/release/libjetpack_api.$(dylib_ext) --out-dir ./target/swift-bindings --language swift
-	echo '#include "jetpack_api_uniffi.h"' >> target/swift-bindings/libwordpressFFI.h
+	echo '#include "jetpack_api_uniffi.h"' >> target/swift-bindings/libjetpackFFI.h
 
 	echo "$$MODULEMAP_CONTENT" > target/swift-bindings/module.modulemap
-	cp target/swift-bindings/*.swift native/swift/Sources/wordpress-api-wrapper/
+	cp target/swift-bindings/jetpack_api.swift native/swift/Sources/jetpack-api-wrapper/
 
 .PHONY: docs # Rebuild docs each time we run this command
 docs:
@@ -93,89 +84,45 @@ release-on-ci:
 	@echo "Swift package will be released by https://buildkite.com/automattic/wordpress-rs/builds/$$(jq -r '.number' .build/buildkite_release_job_response.json)"
 	@echo "Once that job finishes, Android libraries will be release by https://buildkite.com/automattic/wordpress-rs/builds?branch=$(WORDPRESS_RS_NEW_VERSION)"
 
-# An XCFramework relies on the .h file and the modulemap to interact with the precompiled binary
-xcframework-headers: bindings
-	rm -rvf target/swift-bindings/headers
-	mkdir -p target/swift-bindings/headers
-	cp target/swift-bindings/*.h target/swift-bindings/headers
-	cp target/swift-bindings/module.modulemap target/swift-bindings/headers/
-
-apple-platform-targets-macos := x86_64-apple-darwin aarch64-apple-darwin
-apple-platform-targets-ios := aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
-apple-platform-targets-tvos := aarch64-apple-tvos aarch64-apple-tvos-sim
-apple-platform-targets-watchos := arm64_32-apple-watchos x86_64-apple-watchos-sim aarch64-apple-watchos-sim
-apple-platform-targets := \
-	$(apple-platform-targets-macos) \
-	$(apple-platform-targets-ios) \
-	$(apple-platform-targets-tvos) \
-	$(apple-platform-targets-watchos)
-
 ifeq ($(BUILDKITE), true)
 CARGO_PROFILE ?= release
 else
 CARGO_PROFILE ?= dev
 endif
 
-cargo_config_library = --config profile.$(CARGO_PROFILE).debug=true --config 'profile.$(CARGO_PROFILE).panic="abort"'
-
-# Set deployment targets for each platform
-_build-apple-%-darwin: export MACOSX_DEPLOYMENT_TARGET=$(swift_package_platform_macos)
-_build-apple-%-ios _build-apple-%-ios-sim: export IPHONEOS_DEPLOYMENT_TARGET=$(swift_package_platform_ios)
-_build-apple-%-tvos _build-apple-%-tvos-sim: export TVOS_DEPLOYMENT_TARGET=$(swift_package_platform_tvos)
-_build-apple-%-watchos _build-apple-%-watchos-sim: export WATCHOS_DEPLOYMENT_TARGET=$(swift_package_platform_watchos)
-
-# Use nightly toolchain for tvOS and watchOS
-_build-apple-%-tvos _build-apple-%-tvos-sim _build-apple-%-watchos _build-apple-%-watchos-sim: \
-	CARGO_OPTS = +$(rust_nightly_toolchain) -Z build-std=panic_abort,std
-
-# Build the library for a specific target
-_build-apple-%: xcframework-headers
-	cargo $(CARGO_OPTS) $(cargo_config_library) build --target $* --package wp_api --profile $(CARGO_PROFILE)
-	cargo $(CARGO_OPTS) $(cargo_config_library) build --target $* --package jetpack_api --profile $(CARGO_PROFILE)
-
-# Build the library for one single platform, including real device and simulator.
-build-apple-platform-macos := $(addprefix _build-apple-,$(apple-platform-targets-macos))
-build-apple-platform-ios := $(addprefix _build-apple-,$(apple-platform-targets-ios))
-build-apple-platform-tvos := $(addprefix _build-apple-,$(apple-platform-targets-tvos))
-build-apple-platform-watchos := $(addprefix _build-apple-,$(apple-platform-targets-watchos))
-
 # Creating xcframework for one single platform, including real device and simulator.
-xcframework-only-macos: $(build-apple-platform-macos)
-xcframework-only-ios: $(build-apple-platform-ios)
-xcframework-only-tvos: $(build-apple-platform-tvos)
-xcframework-only-watchos: $(build-apple-platform-watchos)
-xcframework-only-%:
-	cargo run --quiet --bin xcframework -- --profile $(CARGO_PROFILE) --targets $(apple-platform-targets-$*)
+xcframework-only-macos:
+	cargo run -q --bin swift_helper_cli build --profile $(CARGO_PROFILE) --only-macos
+
+xcframework-only-ios:
+	cargo run -q --bin swift_helper_cli build --profile $(CARGO_PROFILE) --only-ios
 
 # Creating xcframework for all platforms.
-xcframework-all: $(build-apple-platform-macos) $(build-apple-platform-ios) $(build-apple-platform-tvos) $(build-apple-platform-watchos)
-	cargo run --quiet --bin xcframework -- --profile $(CARGO_PROFILE) --targets $(apple-platform-targets)
+xcframework-all:
+	cargo run -q --bin swift_helper_cli build --profile $(CARGO_PROFILE)
 
 ifeq ($(SKIP_PACKAGE_WP_API),true)
 xcframework:
-	@echo "Skip building libwordpressFFI.xcframework"
+	@echo "Skip building libjetpackFFI.xcframework"
 else
 xcframework: xcframework-all
 endif
 
 xcframework-package: xcframework-all
-	rm -rf libwordpressFFI.xcframework.zip
-	ditto -c -k --sequesterRsrc --keepParent target/libwordpressFFI.xcframework/ libwordpressFFI.xcframework.zip
+	rm -rf libjetpackFFI.xcframework.zip
+	ditto -c -k --sequesterRsrc --keepParent target/libjetpackFFI/libjetpackFFI.xcframework/ libjetpackFFI.xcframework.zip
 
 xcframework-package-checksum:
-	swift package compute-checksum libwordpressFFI.xcframework.zip | tee libwordpressFFI.xcframework.zip.checksum.txt
+	swift package compute-checksum libjetpackFFI.xcframework.zip | tee libjetpackFFI.xcframework.zip.checksum.txt
 
+generate-swift-package-manifest:
+	cargo run -q --bin swift_helper_cli generate-package --project-name jetpack-rs
 
 docker-image-swift:
 	docker build -t wordpress-rs-swift -f Dockerfile.swift .
 
-swift-linux-library: bindings
-	rm -rvf target/swift-bindings/libwordpressFFI-linux
-	mkdir -p target/swift-bindings/libwordpressFFI-linux
-	cp target/swift-bindings/*.h target/swift-bindings/libwordpressFFI-linux/
-	cp target/swift-bindings/module.modulemap target/swift-bindings/libwordpressFFI-linux/
-	cp target/release/libwp_api.a target/swift-bindings/libwordpressFFI-linux/
-	cp target/release/libjetpack_api.a target/swift-bindings/libwordpressFFI-linux/
+swift-linux-library:
+	cargo run -q --bin swift_helper_cli build --profile $(CARGO_PROFILE)
 
 swift-example-app: swift-example-app-mac swift-example-app-ios
 
@@ -191,8 +138,8 @@ test-swift:
 test-swift-linux: docker-image-swift
 	docker run $(docker_opts_shared) -it wordpress-rs-swift make test-swift-linux-in-docker
 
-test-swift-linux-in-docker: swift-linux-library
-	swift test -Xlinker -Ltarget/swift-bindings/libwordpressFFI-linux -Xlinker -lwp_api -Xlinker -ljetpack_api
+test-swift-linux-in-docker: swift-linux-library generate-swift-package-manifest
+	swift test -Xlinker -Ltarget/libjetpackFFI/linux -Xlinker -ljetpackFFI
 
 test-swift-darwin: xcframework
 	swift test

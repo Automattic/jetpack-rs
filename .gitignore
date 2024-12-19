@@ -30,10 +30,12 @@ native/kotlin/.kotlin/
 xcuserdata
 DerivedData
 fastlane/report.xml
-libwordPressFFI.xcframework*
+libjetpackFFI.xcframework*
+/Package.swift
+/Package.resolved
 
 # Auto-generated Swift Files
-native/swift/Sources/wordpress-api-wrapper/*.swift
+native/swift/Sources/jetpack-api-wrapper/*.swift
 
 # Test Server
 .wordpress
