@@ -3,7 +3,6 @@ use std::sync::Arc;
 use crate::request::endpoint::connection_endpoint::{
     ConnectionRequestBuilder, ConnectionRequestExecutor,
 };
-//use crate::request::JetpackRequestExecutor;
 use wp_api::{
     api_client_generate_api_client, api_client_generate_endpoint_impl,
     api_client_generate_request_builder,

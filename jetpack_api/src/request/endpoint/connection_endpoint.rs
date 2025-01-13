@@ -6,7 +6,7 @@ use wp_api::request::endpoint::{AsNamespace, DerivedRequest};
 #[derive(WpDerivedRequest)]
 enum ConnectionRequest {
     #[get(url = "/connection", output = crate::jetpack_connection::JetpackConnectionStatus)]
-    Status,
+    ConnectionStatus,
 }
 
 impl DerivedRequest for ConnectionRequest {

@@ -20,7 +20,11 @@ async fn jetpack_connection() {
         authentication,
         Arc::new(AsyncWpNetworking::default()),
     );
-    let connection_status = jetpack_client.connection().status().await.assert_response();
+    let connection_status = jetpack_client
+        .connection()
+        .connection_status()
+        .await
+        .assert_response();
     assert!(
         !connection_status.data.is_active,
         "{:#?}",
