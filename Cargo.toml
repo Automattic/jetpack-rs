@@ -36,6 +36,6 @@ thiserror = "1.0"
 tokio = "1.40"
 toml = "0.8"
 trybuild = "1.0"
-uniffi = "0.28"
+uniffi = { git = "https://github.com/mozilla/uniffi-rs", rev = "c7c4809ed0e6bb9195b58855cc7cb211eac13290" }
 url = "2.5"
 uuid = "1.10"
